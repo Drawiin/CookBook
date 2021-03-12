@@ -1,7 +1,7 @@
 package com.cookbook.network.model.responses
 
 
-import com.cookbook.network.model.RecipeNetworkEntity
+import com.cookbook.network.model.RecipeDto
 import com.google.gson.annotations.SerializedName
 
 data class RecipeSearchResponse(
@@ -12,5 +12,5 @@ data class RecipeSearchResponse(
     @SerializedName("previous")
     val previous: String?,
     @SerializedName("results")
-    val results: List<RecipeNetworkEntity>?
+    val results: List<RecipeDto>?
 )
