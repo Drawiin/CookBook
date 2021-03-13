@@ -1,4 +1,4 @@
-package com.cookbook
+package com.cookbook.presentation.ui.recipe
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,8 +16,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.cookbook.R
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class RecipeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
