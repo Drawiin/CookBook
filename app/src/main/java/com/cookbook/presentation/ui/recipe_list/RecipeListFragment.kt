@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Text
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.cookbook.presentation.ui.components.RecipeCard
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,16 +27,19 @@ class RecipeListFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 val recipes = viewModel.recipes.value
-                LazyColumn {
-                    items(recipes) { recipe ->
-                        Text(
-                            text = recipe.title ?: "",
-                            style = TextStyle(fontSize = TextUnit.Sp(25), color = Color.White)
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    itemsIndexed(recipes) { _, recipe ->
+                        RecipeCard(
+                            recipe = recipe,
+                            onClick = {}
                         )
                     }
                 }
 
             }
+
         }
     }
 }
