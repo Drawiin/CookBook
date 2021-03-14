@@ -4,27 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.ScrollableRow
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.cookbook.presentation.ui.components.FoodCategoryChip
+import com.cookbook.presentation.ui.components.CircularIndeterminateProgressBar
 import com.cookbook.presentation.ui.components.RecipeCard
+import com.cookbook.presentation.ui.components.SearchAppBar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,70 +31,40 @@ class RecipeListFragment : Fragment() {
             setContent {
                 val recipes = viewModel.recipes.value
                 val query = viewModel.query.value
+                val selectedCategory = viewModel.selectedCategory.value
+                val categoryScrollPosition = viewModel.categoryScrollPosition
+                val loading = viewModel.loading.value
 
                 Column {
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        elevation = 8.dp,
-                        color = Color.White
+                    SearchAppBar(
+                        query = query,
+                        selectedCategory = selectedCategory,
+                        categoryScrollPosition = categoryScrollPosition,
+                        onQueryChanged = viewModel::onQueryChanged,
+                        newSearch = viewModel::newSearch,
+                        onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                        onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition
+                    )
+
+                    Box(
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        Column {
-                            Row(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                TextField(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.9f)
-                                        .padding(8.dp),
-                                    value = query,
-                                    onValueChange = viewModel::setQuery,
-                                    label = {
-                                        Text(text = "Search")
-                                    },
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Text,
-                                        imeAction = ImeAction.Search
-                                    ),
-                                    leadingIcon = {
-                                        Icon(Icons.Filled.Search)
-                                    },
-                                    onImeActionPerformed = { action, keyboardController ->
-                                        if (action == ImeAction.Search) {
-                                            viewModel.newSearch()
-                                            keyboardController?.hideSoftwareKeyboard()
-                                        }
-                                    },
-                                    textStyle = TextStyle(
-                                        color = MaterialTheme.colors.onSurface
-                                    ),
-                                    backgroundColor = MaterialTheme.colors.surface
+                        LazyColumn {
+                            itemsIndexed(recipes) { _, recipe ->
+                                RecipeCard(
+                                    recipe = recipe,
+                                    onClick = {}
                                 )
                             }
-                            ScrollableRow(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-                            ) {
-                                for (category in getAllFoodCategories()) {
-                                    FoodCategoryChip(
-                                        category = category.value,
-                                        onClick = {
-                                            viewModel.setQuery(it)
-                                            viewModel.newSearch()
-                                        })
-                                }
-                            }
                         }
-                    }
 
-                    LazyColumn {
-                        itemsIndexed(recipes) { _, recipe ->
-                            RecipeCard(
-                                recipe = recipe,
-                                onClick = {}
-                            )
-                        }
+                        CircularIndeterminateProgressBar(
+                            isDisplayed = loading
+                        )
                     }
                 }
             }
+
 
         }
     }
