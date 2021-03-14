@@ -9,11 +9,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import com.cookbook.R
 import com.cookbook.domain.model.Recipe
+import com.cookbook.util.loadPicture
 
 @Composable
 fun RecipeCard(
@@ -31,14 +33,16 @@ fun RecipeCard(
         ) {
         Column {
             recipe.featuredImage?.let { url ->
-                Image(
-                    // FIXME -> Load Resource Asynchronously
-                    bitmap = imageResource(id = R.drawable.empty_plate),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .preferredHeight(225.dp),
-                    contentScale = ContentScale.Crop
-                )
+                val image = loadPicture(url = url, defaultImg = R.drawable.empty_plate).value
+                image?.let { img ->
+                    Image(
+                        bitmap = img.asImageBitmap(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .preferredHeight(225.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
             recipe.title?.let { title ->
                 Row(

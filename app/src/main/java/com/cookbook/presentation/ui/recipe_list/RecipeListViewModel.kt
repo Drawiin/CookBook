@@ -1,6 +1,5 @@
 package com.cookbook.presentation.ui.recipe_list
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
@@ -15,18 +14,23 @@ class RecipeListViewModel @ViewModelInject constructor(
     private val repository: RecipeRepository,
     @Named(NAMED_TOKEN) private val token: String
 ) : ViewModel() {
-    val recipes: MutableState<List<Recipe>> = mutableStateOf(ArrayList())
+    val recipes = mutableStateOf(emptyList<Recipe>())
+    val query = mutableStateOf("")
 
     init {
-        loadRecipes()
+        newSearch()
     }
 
-    private fun loadRecipes() {
+    fun setQuery(value: String) {
+        query.value = value
+    }
+
+    fun newSearch() {
         viewModelScope.launch {
             val result = repository.search(
                 token = token,
                 page = 1,
-                query = "Chicken"
+                query = query.value
             )
 
             recipes.value = result
