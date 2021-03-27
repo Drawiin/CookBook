@@ -4,19 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.cookbook.presentation.ui.components.AnimatedHeartButton
 import com.cookbook.presentation.ui.components.CircularIndeterminateProgressBar
-import com.cookbook.presentation.ui.components.HeartAnimationDefinition.HearthButtonState.ACTIVE
-import com.cookbook.presentation.ui.components.HeartAnimationDefinition.HearthButtonState.IDLE
+import com.cookbook.presentation.ui.components.LoadingRecipeListShimmer
 import com.cookbook.presentation.ui.components.RecipeCard
 import com.cookbook.presentation.ui.components.SearchAppBar
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +40,12 @@ class RecipeListFragment : Fragment() {
                 val categoryScrollPosition = viewModel.categoryScrollPosition
                 val loading = viewModel.loading.value
 
-                Column {
+                Column(
+                    modifier = Modifier.background(
+                        color = Color.White
+                    )
+                ) {
+
                     SearchAppBar(
                         query = query,
                         selectedCategory = selectedCategory,
@@ -50,36 +56,24 @@ class RecipeListFragment : Fragment() {
                         onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition
                     )
 
-                    val state = remember { mutableStateOf(IDLE) }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth().height(200.dp),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        AnimatedHeartButton(
-                            modifier = Modifier,
-                            buttonState = state,
-                            onToggle = {
-                                state.value = when (state.value) {
-                                    IDLE -> ACTIVE
-                                    ACTIVE -> IDLE
-                                }
-                            }
-                        )
-                    }
-
-
                     Box(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        LazyColumn {
-                            itemsIndexed(recipes) { _, recipe ->
-                                RecipeCard(
-                                    recipe = recipe,
-                                    onClick = {}
-                                )
+                        if (!loading) {
+                            LazyColumn(
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            ) {
+                                itemsIndexed(recipes) { _, recipe ->
+                                    RecipeCard(
+                                        recipe = recipe,
+                                        onClick = {}
+                                    )
+                                }
                             }
+                        } else {
+                            LoadingRecipeListShimmer(imageHeight = 250.dp)
                         }
+
 
                         CircularIndeterminateProgressBar(
                             isDisplayed = loading
