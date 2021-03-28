@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -60,9 +59,7 @@ fun SearchAppBar(
                             keyboardController?.hideSoftwareKeyboard()
                         }
                     },
-                    textStyle = TextStyle(
-                        color = MaterialTheme.colors.onSurface
-                    ),
+                    textStyle = MaterialTheme.typography.button,
                     backgroundColor = MaterialTheme.colors.surface
                 )
                 ConstraintLayout(

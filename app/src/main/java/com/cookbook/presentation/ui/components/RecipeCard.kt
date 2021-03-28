@@ -53,14 +53,14 @@ fun RecipeCard(
                 ) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.h3,
                         modifier = Modifier.fillMaxWidth(0.80f)
                     )
                     Text(
                         text = recipe.rating.toString(),
                         modifier = Modifier
                             .align(Alignment.CenterVertically),
-                        style = MaterialTheme.typography.body1,
+                        style = MaterialTheme.typography.h5,
                     )
                 }
             }
