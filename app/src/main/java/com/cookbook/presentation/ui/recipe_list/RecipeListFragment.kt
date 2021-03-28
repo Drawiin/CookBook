@@ -10,22 +10,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.cookbook.presentation.BaseApplication
 import com.cookbook.presentation.ui.components.CircularIndeterminateProgressBar
 import com.cookbook.presentation.ui.components.LoadingRecipeListShimmer
 import com.cookbook.presentation.ui.components.RecipeCard
 import com.cookbook.presentation.ui.components.SearchAppBar
+import com.cookbook.presentation.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RecipeListFragment : Fragment() {
 
-    val viewModel: RecipeListViewModel by viewModels()
+    @Inject
+    lateinit var application: BaseApplication
+
+    private val viewModel: RecipeListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,54 +40,53 @@ class RecipeListFragment : Fragment() {
     ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
-                val recipes = viewModel.recipes.value
-                val query = viewModel.query.value
-                val selectedCategory = viewModel.selectedCategory.value
-                val categoryScrollPosition = viewModel.categoryScrollPosition
-                val loading = viewModel.loading.value
+                AppTheme(darkTheme = application.isDark.value) {
+                    val recipes = viewModel.recipes.value
+                    val query = viewModel.query.value
+                    val selectedCategory = viewModel.selectedCategory.value
+                    val categoryScrollPosition = viewModel.categoryScrollPosition
+                    val loading = viewModel.loading.value
 
-                Column(
-                    modifier = Modifier.background(
-                        color = Color.White
-                    )
-                ) {
+                    Column {
 
-                    SearchAppBar(
-                        query = query,
-                        selectedCategory = selectedCategory,
-                        categoryScrollPosition = categoryScrollPosition,
-                        onQueryChanged = viewModel::onQueryChanged,
-                        newSearch = viewModel::newSearch,
-                        onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
-                        onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition
-                    )
-
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        if (!loading) {
-                            LazyColumn(
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            ) {
-                                itemsIndexed(recipes) { _, recipe ->
-                                    RecipeCard(
-                                        recipe = recipe,
-                                        onClick = {}
-                                    )
-                                }
-                            }
-                        } else {
-                            LoadingRecipeListShimmer(imageHeight = 250.dp)
-                        }
-
-
-                        CircularIndeterminateProgressBar(
-                            isDisplayed = loading
+                        SearchAppBar(
+                            query = query,
+                            selectedCategory = selectedCategory,
+                            categoryScrollPosition = categoryScrollPosition,
+                            onQueryChanged = viewModel::onQueryChanged,
+                            newSearch = viewModel::newSearch,
+                            onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                            onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition,
+                            onToggleTheme = application::toggleTheme
                         )
+
+                        Box(
+                            modifier = Modifier.fillMaxSize()
+                                .background(MaterialTheme.colors.background)
+                        ) {
+                            if (!loading) {
+                                LazyColumn(
+                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                ) {
+                                    itemsIndexed(recipes) { _, recipe ->
+                                        RecipeCard(
+                                            recipe = recipe,
+                                            onClick = {}
+                                        )
+                                    }
+                                }
+                            } else {
+                                LoadingRecipeListShimmer(imageHeight = 250.dp)
+                            }
+
+
+                            CircularIndeterminateProgressBar(
+                                isDisplayed = loading
+                            )
+                        }
                     }
                 }
             }
-
 
         }
     }
