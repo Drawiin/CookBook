@@ -16,11 +16,12 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import com.cookbook.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class RecipeFragment : Fragment() {
+    private var recipeId: Int? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,12 +36,24 @@ class RecipeFragment : Fragment() {
                     )
                     Spacer(modifier = Modifier.padding(10.dp))
                     Button(onClick = {
-                        findNavController().navigate(R.id.action_recipeListFragment_to_recipeFragment)
+                        findNavController().popBackStack()
                     }) {
                         Text(text = "Go To Recipe")
                     }
                 }
             }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        recipeId = arguments?.getInt(RECIPE_ID_KEY)
+    }
+
+    companion object {
+        private const val RECIPE_ID_KEY = "RECIPE_ID_KEY"
+        fun createBundle(id: Int) = Bundle().apply {
+            putInt(RECIPE_ID_KEY, id)
         }
     }
 }
