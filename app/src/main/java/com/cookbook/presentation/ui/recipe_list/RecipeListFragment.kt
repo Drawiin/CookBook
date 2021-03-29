@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
@@ -21,6 +21,7 @@ import com.cookbook.presentation.ui.components.CircularIndeterminateProgressBar
 import com.cookbook.presentation.ui.components.LoadingRecipeListShimmer
 import com.cookbook.presentation.ui.components.RecipeCard
 import com.cookbook.presentation.ui.components.SearchAppBar
+import com.cookbook.presentation.ui.recipe_list.RecipeListViewModel.Companion.API_PAGE_SIZE
 import com.cookbook.presentation.ui.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -46,29 +47,37 @@ class RecipeListFragment : Fragment() {
                     val selectedCategory = viewModel.selectedCategory.value
                     val categoryScrollPosition = viewModel.categoryScrollPosition
                     val loading = viewModel.loading.value
+                    val page = viewModel.page.value
 
-                    Column {
-
-                        SearchAppBar(
-                            query = query,
-                            selectedCategory = selectedCategory,
-                            categoryScrollPosition = categoryScrollPosition,
-                            onQueryChanged = viewModel::onQueryChanged,
-                            newSearch = viewModel::newSearch,
-                            onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
-                            onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition,
-                            onToggleTheme = application::toggleTheme
-                        )
-
+                    Scaffold(
+                        topBar = {
+                            SearchAppBar(
+                                query = query,
+                                selectedCategory = selectedCategory,
+                                categoryScrollPosition = categoryScrollPosition,
+                                onQueryChanged = viewModel::onQueryChanged,
+                                newSearch = {
+                                    viewModel.onTriggerEvent(RecipeListEvent.NewSearchEvent)
+                                },
+                                onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                                onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition,
+                                onToggleTheme = application::toggleTheme
+                            )
+                        }
+                    ) {
                         Box(
                             modifier = Modifier.fillMaxSize()
                                 .background(MaterialTheme.colors.background)
                         ) {
-                            if (!loading) {
+                            if (!loading && recipes.isNotEmpty()) {
                                 LazyColumn(
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                 ) {
-                                    itemsIndexed(recipes) { _, recipe ->
+                                    itemsIndexed(recipes) { index, recipe ->
+                                        viewModel.onChangeRecipeScrollPosition(index)
+                                        if ((index + 1) >= (page * API_PAGE_SIZE) && !loading) {
+                                            viewModel.onTriggerEvent(RecipeListEvent.NextPageEvent)
+                                        }
                                         RecipeCard(
                                             recipe = recipe,
                                             onClick = {}
@@ -85,9 +94,9 @@ class RecipeListFragment : Fragment() {
                             )
                         }
                     }
+
                 }
             }
-
         }
     }
 }
