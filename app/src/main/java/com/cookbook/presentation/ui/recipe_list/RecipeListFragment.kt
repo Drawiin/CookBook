@@ -55,11 +55,11 @@ class RecipeListFragment : Fragment() {
                                 query = query,
                                 selectedCategory = selectedCategory,
                                 categoryScrollPosition = categoryScrollPosition,
-                                onQueryChanged = viewModel::onQueryChanged,
+                                onQueryChanged = viewModel::onChangeQuery,
                                 newSearch = {
                                     viewModel.onTriggerEvent(RecipeListEvent.NewSearchEvent)
                                 },
-                                onSelectedCategoryChanged = viewModel::onSelectedCategoryChanged,
+                                onSelectedCategoryChanged = viewModel::onChangeSelectedCategory,
                                 onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition,
                                 onToggleTheme = application::toggleTheme
                             )
@@ -69,12 +69,14 @@ class RecipeListFragment : Fragment() {
                             modifier = Modifier.fillMaxSize()
                                 .background(MaterialTheme.colors.background)
                         ) {
-                            if (!loading && recipes.isNotEmpty()) {
+                            if (loading && recipes.isEmpty()) {
+                                LoadingRecipeListShimmer(imageHeight = 250.dp)
+                            } else {
                                 LazyColumn(
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                 ) {
                                     itemsIndexed(recipes) { index, recipe ->
-                                        viewModel.onChangeRecipeScrollPosition(index)
+                                        viewModel.onChangeListScrollPosition(index)
                                         if ((index + 1) >= (page * API_PAGE_SIZE) && !loading) {
                                             viewModel.onTriggerEvent(RecipeListEvent.NextPageEvent)
                                         }
@@ -84,8 +86,6 @@ class RecipeListFragment : Fragment() {
                                         )
                                     }
                                 }
-                            } else {
-                                LoadingRecipeListShimmer(imageHeight = 250.dp)
                             }
 
 
