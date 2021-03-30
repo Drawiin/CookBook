@@ -45,8 +45,8 @@ fun RecipeList(
                 }
             }
         }
-        CircularIndeterminateProgressBar(
-            isDisplayed = loading
-        )
+//        CircularIndeterminateProgressBar(
+//            isDisplayed = loading
+//        )
     }
 }

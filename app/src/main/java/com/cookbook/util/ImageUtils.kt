@@ -10,6 +10,9 @@ import androidx.compose.ui.platform.AmbientContext
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.cookbook.R
+
+@DrawableRes const val DEFAULT_RECIPE_IMAGE = R.drawable.empty_plate
 
 @Composable
 fun loadPicture(url: String, @DrawableRes defaultImg: Int): MutableState<Bitmap?> {

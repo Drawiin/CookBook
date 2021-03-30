@@ -5,6 +5,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.cookbook.presentation.ui.components.CircularIndeterminateProgressBar
 
 private val LightThemeColors = lightColors(
     primary = Blue600,
@@ -37,6 +38,7 @@ private val DarkThemeColors = darkColors(
 @Composable
 fun AppTheme(
     darkTheme: Boolean,
+    displayProgressBar: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     MaterialTheme(
@@ -45,6 +47,7 @@ fun AppTheme(
         shapes = AppShapes
     ) {
         content()
+        CircularIndeterminateProgressBar(isDisplayed = displayProgressBar, 0.3f)
     }
 }
 
