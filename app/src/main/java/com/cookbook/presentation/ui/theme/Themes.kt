@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.Color
 import com.cookbook.presentation.ui.components.CircularIndeterminateProgressBar
 
 private val LightThemeColors = lightColors(
-    primary = Blue600,
-    primaryVariant = Blue400,
+    primary = Orange600,
+    primaryVariant = Orange400,
     onPrimary = Black2,
     secondary = Color.White,
     secondaryVariant = Teal300,
@@ -23,7 +23,7 @@ private val LightThemeColors = lightColors(
 )
 
 private val DarkThemeColors = darkColors(
-    primary = Blue700,
+    primary = Orange700,
     primaryVariant = Color.White,
     onPrimary = Color.White,
     secondary = Black1,

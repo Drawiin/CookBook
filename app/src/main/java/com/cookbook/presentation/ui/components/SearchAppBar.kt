@@ -14,11 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.cookbook.R
 import com.cookbook.presentation.ui.recipe_list.FoodCategory
 import com.cookbook.presentation.ui.recipe_list.getAllFoodCategories
 
 @Composable
 fun SearchAppBar(
+    isDark: Boolean,
     query: String,
     selectedCategory: FoodCategory?,
     categoryScrollPosition: Float,
@@ -59,7 +61,6 @@ fun SearchAppBar(
                             keyboardController?.hideSoftwareKeyboard()
                         }
                     },
-                    textStyle = MaterialTheme.typography.button,
                     backgroundColor = MaterialTheme.colors.surface
                 )
                 ConstraintLayout(
@@ -74,7 +75,12 @@ fun SearchAppBar(
                             bottom.linkTo(parent.bottom)
                         }
                     ) {
-                        Icon(Icons.Filled.MoreVert)
+                        if (isDark){
+                            MyAppIcon(resourceId = R.drawable.ic_baseline_light_mode_24)
+                        } else {
+                            MyAppIcon(resourceId = R.drawable.ic_baseline_dark_mode_24)
+                        }
+
                     }
                 }
             }

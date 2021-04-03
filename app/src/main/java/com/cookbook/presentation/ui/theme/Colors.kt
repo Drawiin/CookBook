@@ -2,12 +2,9 @@ package com.cookbook.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Blue300 = Color(0xFF64B5F6)
-val Blue400 = Color(0xFF42A5F5)
-val Blue500 = Color(0xFF2196F3)
-val Blue600 = Color(0xFF1E88E5)
-val Blue700 = Color(0xFF1976D2)
-val Blue800 = Color(0xFF1565C0)
+val Orange400 = Color(0xFFff9800)
+val Orange600 = Color(0xFFfb8c00)
+val Orange700 = Color(0xFFf57c00)
 
 val Teal300 = Color(0xFF1AC6FF)
 

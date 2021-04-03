@@ -45,6 +45,7 @@ class RecipeListFragment : Fragment() {
                     Scaffold(
                         topBar = {
                             SearchAppBar(
+                                isDark = application.isDark.value,
                                 query = query,
                                 selectedCategory = selectedCategory,
                                 categoryScrollPosition = categoryScrollPosition,
