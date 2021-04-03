@@ -2,7 +2,7 @@ package com.cookbook.di
 
 import com.cookbook.network.RecipeService
 import com.cookbook.network.model.RecipeDtoMapper
-import com.cookbook.repository.RecipeRepository
+import com.cookbook.domain.boundaries.RecipeRepository
 import com.cookbook.repository.RecipeRepositoryImpl
 import dagger.Module
 import dagger.Provides

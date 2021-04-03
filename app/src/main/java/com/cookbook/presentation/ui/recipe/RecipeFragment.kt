@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -46,18 +51,12 @@ class RecipeFragment : Fragment() {
 
                 val recipe = viewModel.recipe.value
 
-                val scaffoldState = rememberScaffoldState()
 
                 AppTheme(
                     darkTheme = application.isDark.value,
                     displayProgressBar = loading
                 ) {
-                    Scaffold(
-                        scaffoldState = scaffoldState,
-                        snackbarHost = {
-                            scaffoldState.snackbarHostState
-                        }
-                    ) {
+                    Scaffold() {
                         Box(
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -67,6 +66,20 @@ class RecipeFragment : Fragment() {
                                 RecipeView(
                                     recipe = it,
                                 )
+                            }
+                            Button(
+                                shape = CircleShape,
+                                onClick = { activity?.onBackPressed() },
+                                modifier = Modifier
+                                    .align(alignment = Alignment.TopStart)
+                                    .size(48.dp)
+                                    .padding(8.dp),
+                                contentPadding = PaddingValues(0.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = MaterialTheme.colors.surface
+                                )
+                            ) {
+                                Icon(Icons.Default.ArrowBack)
                             }
                         }
                     }

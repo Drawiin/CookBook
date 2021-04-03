@@ -10,15 +10,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cookbook.domain.model.Recipe
 import com.cookbook.presentation.ui.recipe.RecipeEvent.GetRecipeEvent
-import com.cookbook.repository.RecipeRepository
+import com.cookbook.domain.boundaries.RecipeRepository
+import com.cookbook.domain.interactors.GetRecipeDetails
 import com.cookbook.util.TAG
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Named
 
 class RecipeViewModel
 @ViewModelInject
 constructor(
-    private val recipeRepository: RecipeRepository,
+    private val getRecipeDetails: GetRecipeDetails,
     @Named("auth_token") private val token: String,
     @Assisted private val state: SavedStateHandle,
 ) : ViewModel() {
@@ -33,7 +35,7 @@ constructor(
     }
 
     fun onTriggerEvent(event: RecipeEvent) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 when (event) {
                     is GetRecipeEvent -> {
@@ -51,7 +53,7 @@ constructor(
 
     private suspend fun getRecipe(id: Int) {
         loading.value = true
-        val recipe = recipeRepository.get(token = token, id = id)
+        val recipe = getRecipeDetails.execute(token = token, id = id)
         this.recipe.value = recipe
 
         state.set(STATE_KEY_RECIPE, recipe.id)

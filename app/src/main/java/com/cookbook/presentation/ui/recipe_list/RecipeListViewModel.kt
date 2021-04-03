@@ -7,16 +7,17 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cookbook.domain.boundaries.RecipeRepository
+import com.cookbook.domain.interactors.SearchRecipe
 import com.cookbook.domain.model.Recipe
 import com.cookbook.presentation.ui.recipe_list.RecipeListEvent.*
-import com.cookbook.repository.RecipeRepository
 import com.cookbook.util.NAMED_TOKEN
 import com.cookbook.util.TAG
 import kotlinx.coroutines.launch
 import javax.inject.Named
 
 class RecipeListViewModel @ViewModelInject constructor(
-    private val repository: RecipeRepository,
+    private val searchRecipe: SearchRecipe,
     @Named(NAMED_TOKEN) private val token: String,
     @Assisted private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -31,15 +32,19 @@ class RecipeListViewModel @ViewModelInject constructor(
     private var recipeListScrollPosition = 0
 
     init {
+        onViewModelStart()
+    }
+
+    private fun onViewModelStart() {
         savedStateHandle.get<Int>(STATE_KEY_PAGE)?.let { p ->
-            Log.d(TAG, "restoring page: ${p}")
+            Log.d(TAG, "restoring page: $p")
             setPage(p)
         }
         savedStateHandle.get<String>(STATE_KEY_QUERY)?.let { q ->
             setQuery(q)
         }
         savedStateHandle.get<Int>(STATE_KEY_LIST_POSITION)?.let { p ->
-            Log.d(TAG, "restoring scroll position: ${p}")
+            Log.d(TAG, "restoring scroll position: $p")
             setListScrollPosition(p)
         }
         savedStateHandle.get<FoodCategory>(STATE_KEY_SELECTED_CATEGORY)?.let { c ->
@@ -71,15 +76,14 @@ class RecipeListViewModel @ViewModelInject constructor(
                 Log.d(TAG, "onTriggerEvent: $e cause: ${e.cause}")
             }
         }
-
     }
 
     private suspend fun restoreState() {
         loading.value = true
         val results: MutableList<Recipe> = mutableListOf()
-        for (p in 1..page.value) {
+        (1..page.value).forEach { p ->
             Log.d(TAG, "restoreState: page: ${p}, query: ${query.value}")
-            val result = repository.search(token = token, page = p, query = query.value)
+            val result = searchRecipe.execute(token = token, page = p, query = query.value)
             results.addAll(result)
             if (p == page.value) {
                 recipes.value = results
@@ -91,7 +95,7 @@ class RecipeListViewModel @ViewModelInject constructor(
     private suspend fun newSearch() {
         loading.value = true
         resetSearchState()
-        val result = repository.search(
+        val result = searchRecipe.execute(
             token = token,
             page = 1,
             query = query.value
@@ -107,7 +111,7 @@ class RecipeListViewModel @ViewModelInject constructor(
             loading.value = true
             incrementPage()
             if (page.value > 1) {
-                val result = repository.search(
+                val result = searchRecipe.execute(
                     token = token,
                     page = page.value,
                     query = query.value

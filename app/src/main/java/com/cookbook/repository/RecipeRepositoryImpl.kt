@@ -1,5 +1,6 @@
 package com.cookbook.repository
 
+import com.cookbook.domain.boundaries.RecipeRepository
 import com.cookbook.domain.model.Recipe
 import com.cookbook.network.RecipeService
 import com.cookbook.network.model.RecipeDtoMapper

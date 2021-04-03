@@ -1,4 +1,4 @@
-package com.cookbook.repository
+package com.cookbook.domain.boundaries
 
 import android.app.DownloadManager
 import com.cookbook.domain.model.Recipe
